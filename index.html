@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Externality Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a lecture tool. One tab bar, then one wide stage (image or SVG) with a slim control rail beneath. Blackboard-navy accent on a chalk-warm neutral. */
+:root{--bg:#f7f5f0;--panel:#ffffff;--fg:#1d2430;--muted:#5d6572;--line:#d9d4c8;--accent:#1f4e79;--demand:#1f4e79;--supply:#b3261e;--social:#7a6200;--dwl:#ff9b9b;--rev:#a9c8ea;--good:#2e7d32;--warn:#ef6c00;--display:"Source Serif 4",Georgia,serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#15191f;--panel:#1e242c;--fg:#eceef1;--muted:#a3abb6;--line:#343c47;--accent:#8ab8e0;--demand:#8ab8e0;--supply:#f08a80;--social:#e0c45a;--dwl:#8a3b3b;--rev:#2f4f70;--good:#7fd48a;--warn:#ffb36b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15191f;--panel:#1e242c;--fg:#eceef1;--muted:#a3abb6;--line:#343c47;--accent:#8ab8e0;--demand:#8ab8e0;--supply:#f08a80;--social:#e0c45a;--dwl:#8a3b3b;--rev:#2f4f70;--good:#7fd48a;--warn:#ffb36b;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 32px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;max-width:1180px;margin:0 auto 12px}
+h1{font-family:var(--display);font-size:1.6rem;margin:0;text-wrap:balance}
+header p{margin:0;color:var(--muted)}
+nav{display:flex;gap:6px;max-width:1180px;margin:0 auto 14px}
+nav button{font:inherit;font-weight:600;padding:8px 16px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+nav button:focus-visible,.ctl button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{max-width:1180px;margin:0 auto}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+.stage img{display:block;width:100%;height:auto;border-radius:4px}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:12px}
+.ctl button{font:inherit;font-weight:600;padding:8px 14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;cursor:pointer}
+.ctl button:disabled{opacity:.4;cursor:default}
+.cap{flex:1 1 320px;min-width:0}
+.chip{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid currentColor}
+.chip.ext{color:var(--supply)}.chip.pec{color:var(--warn)}.chip.in{color:var(--good)}
+.grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(260px,1fr);gap:14px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+svg{width:100%;height:auto;display:block}
+.rail{display:flex;flex-direction:column;gap:14px;min-width:0}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0;background:var(--panel)}
+legend{font-weight:600;padding:0 6px}
+label{display:flex;justify-content:space-between;font-weight:500;margin-bottom:2px}
+label output{font-family:var(--mono);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.read{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-variant-numeric:tabular-nums}
+.read dt{color:var(--muted)}.read dd{margin:0;font-family:var(--mono);text-align:right}
+.read dd.hot{color:var(--supply);font-weight:600}
+.seg{display:flex;gap:0}
+.seg button{flex:1;font:inherit;font-weight:600;padding:7px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+.seg button:first-child{border-radius:6px 0 0 6px}.seg button:last-child{border-radius:0 6px 6px 0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.hint{color:var(--muted);font-size:.9rem;margin:0}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:6px 0 4px;font-size:.95rem}
+.key b{font-size:1.05rem;margin-right:3px}
+.key .pts{flex-basis:100%;color:var(--muted)}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.types button{font:inherit;font-weight:600;font-size:.9rem;padding:8px 6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:6px;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center}
+.types button small{font-weight:400;color:var(--muted)}
+.types button[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.types button[aria-pressed="true"] small{color:var(--bg)}
+.axis text{font-family:var(--body);font-size:13px;fill:var(--fg)}
+.axis line,.axis path{stroke:var(--fg)}
+.lbl{font-family:var(--body);font-size:14px;font-weight:600}
+@media (prefers-reduced-motion:no-preference){.anim{transition:all .25s ease}}
+</style>
+<header><h1>Externality Lab</h1></header>
+<main>
+<section id="graph" class="stage">
+  <div class="grid">
+    <div style="min-width:0"><svg id="plot" viewBox="0 0 760 500" aria-label="Supply and demand diagram with private and social curves"></svg><p class="key" id="key"></p><p class="hint" id="eq"></p></div>
+    <div class="rail">
+      <fieldset><legend>Type of externality</legend>
+        <div class="types"><button id="m-np" type="button" aria-pressed="true">Negative production<small>data center</small></button><button id="m-nc" type="button" aria-pressed="false">Negative consumption<small>driving downtown</small></button><button id="m-pp" type="button" aria-pressed="false">Positive production<small>beekeeping</small></button><button id="m-pc" type="button" aria-pressed="false">Positive consumption<small>vaccination</small></button></div>
+      </fieldset>
+      <fieldset><legend id="lg1">External effect per unit</legend><label for="ext"><span id="extname">MD</span><output id="extv">40</output></label><input id="ext" type="range" min="0" max="80" step="5" value="40"><p class="hint" id="exthint"></p></fieldset>
+      <fieldset><legend id="lg2">Policy</legend><label for="tax"><span id="taxname">Tax per unit</span><output id="taxv">0</output></label><input id="tax" type="range" min="0" max="80" step="5" value="0"><p class="hint" id="taxhint">Drag until the market lands on Q*.</p></fieldset>
+      <fieldset><legend>Readout</legend><dl class="read"><dt>Market quantity Q1</dt><dd id="r-qm"></dd><dt>Efficient quantity Q*</dt><dd id="r-qs"></dd><dt>Buyers pay</dt><dd id="r-pb"></dd><dt>Sellers receive</dt><dd id="r-ps"></dd><dt>Deadweight loss</dt><dd id="r-dwl" class="hot"></dd><dt id="r-revl">Tax revenue</dt><dd id="r-rev"></dd></dl></fieldset>
+    </div>
+  </div>
+</section>
+</main>
+<script>
+// graph: four types, Gruber notation. Demand D: P = 160 - Q (PMB). Supply S: P = 40 + Q (PMC). E = external effect per unit, T = policy per unit.
+const TYPES={
+ np:{name:'Negative production externality',ex:'MD',pol:'Tax per unit (on sellers)',xl:'Quantity of computing (Q)',hint:'Marginal damage from producing one more unit: hum, exhaust, water. It pushes the cost curve up.',rev:'Tax revenue'},
+ nc:{name:'Negative consumption externality',ex:'MD',pol:'Charge per trip (on buyers)',xl:'Trips into downtown (Q)',hint:'Marginal damage from consuming one more unit: delay and exhaust on everyone else. It pulls the benefit curve down.',rev:'Charge revenue'},
+ pp:{name:'Positive production externality',ex:'MB',pol:'Subsidy per unit (to sellers)',xl:'Honey (Q)',hint:'Marginal benefit to others from producing one more unit: pollination next door. It pulls the cost curve down.',rev:'Subsidy cost'},
+ pc:{name:'Positive consumption externality',ex:'MB',pol:'Subsidy per shot (to buyers)',xl:'Vaccinations (Q)',hint:'Marginal benefit to others from consuming one more unit: protection for people around you. It pushes the benefit curve up.',rev:'Subsidy cost'}};
+let mode='np'; const S=document.getElementById('plot');
+const ext=document.getElementById('ext'),tax=document.getElementById('tax');
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function setMode(m){mode=m;for(const k of Object.keys(TYPES))document.getElementById('m-'+k).setAttribute('aria-pressed',k===m);
+ const t=TYPES[m];document.getElementById('extname').textContent=t.ex;document.getElementById('exthint').textContent=t.hint;document.getElementById('taxname').textContent=t.pol;document.getElementById('r-revl').textContent=t.rev;
+ ext.value=40;tax.value=0;draw();}
+for(const k of Object.keys(TYPES))document.getElementById('m-'+k).onclick=()=>setMode(k);
+ext.oninput=draw;tax.oninput=draw;
+function draw(){
+ const E=+ext.value,T=+tax.value;document.getElementById('extv').textContent=E;document.getElementById('taxv').textContent=T;
+ const W=760,H=500,L=70,R=118,TOP=30,B=60,xmax=120,ymax=200;
+ const D=q=>160-q,Sp=q=>40+q;
+ const neg=(mode==='np'||mode==='nc'),prod=(mode==='np'||mode==='pp');
+ const sgn=neg?1:-1;
+ const Soc=prod?(q=>Sp(q)+sgn*E):(q=>D(q)-sgn*E);
+ const Pol=prod?(q=>Sp(q)+sgn*T):(q=>D(q)-sgn*T);
+ const Qm=(120-sgn*T)/2, Qs=(120-sgn*E)/2;
+ let Pb,Ps; if(prod){Pb=D(Qm);Ps=Pb-sgn*T;}else{Ps=Sp(Qm);Pb=Ps+sgn*T;}
+ const X=q=>L+q/xmax*(W-L-R),Y=p=>TOP+(1-p/ymax)*(H-TOP-B);
+ const clip=(f,a,b)=>{const pts=[];for(let q=a;q<=b;q+=1){const p=f(q);if(p>=0&&p<=ymax)pts.push(X(q)+','+Y(p));}return pts.join(' ')};
+ let out='';
+ out+=`<g class="axis"><line x1="${L}" y1="${Y(0)}" x2="${W-R}" y2="${Y(0)}" stroke-width="1.5"/><line x1="${L}" y1="${Y(0)}" x2="${L}" y2="${TOP}" stroke-width="1.5"/>`;
+ out+=`<text x="${(L+W-R)/2}" y="${H-12}" text-anchor="middle">${TYPES[mode].xl}</text><text transform="translate(16 ${(TOP+Y(0))/2}) rotate(-90)" text-anchor="middle">Price (P)</text>`;
+ { const close=Math.abs(X(Qm)-X(Qs))<84&&Math.abs(Qm-Qs)>0.01; const am=close?(Qm<Qs?'end':'start'):'middle', as=close?(Qs<Qm?'end':'start'):'middle'; const dm=close?(Qm<Qs?-4:4):0, ds=close?(Qs<Qm?-4:4):0;
+   out+=`<text x="${X(Qm)+dm}" y="${Y(0)+20}" text-anchor="${am}">Q1 = ${Qm}</text>`+(Math.abs(Qm-Qs)>0.01?`<text x="${X(Qs)+ds}" y="${Y(0)+20}" text-anchor="${as}" fill="${css('--social')}">Q* = ${Qs}</text>`:'')+`</g>`; }
+ const a=Math.min(Qm,Qs),b=Math.max(Qm,Qs);
+ const over=Qm>Qs+0.01;
+ if(b-a>0.01){const top=prod?D:Soc, bot=prod?Soc:Sp; let poly=[];for(let q=a;q<=b+0.001;q+=0.5)poly.push(X(q)+','+Y(top(q)));for(let q=b;q>=a-0.001;q-=0.5)poly.push(X(q)+','+Y(bot(q)));
+   out+=`<polygon class="anim" points="${poly.join(' ')}" fill="${over?css('--dwl'):'#c5e0b4'}" opacity="0.85"/>`;}
+ if(T>0){const y1=Y(Math.max(Pb,Ps)),y2=Y(Math.min(Pb,Ps));out+=`<rect class="anim" x="${L}" y="${y1}" width="${X(Qm)-L}" height="${y2-y1}" fill="${css('--rev')}" opacity="0.7"/>`;}
+ const dem=css('--demand'),sup=css('--supply'),soc=css('--social');
+ out+=`<polyline points="${clip(D,0,xmax)}" fill="none" stroke="${dem}" stroke-width="3.5" ${(!prod&&T>0)?'stroke-dasharray="4 5" opacity="0.6"':''}/>`;
+ out+=`<polyline points="${clip(Sp,0,xmax)}" fill="none" stroke="${sup}" stroke-width="3.5" ${(prod&&T>0)?'stroke-dasharray="4 5" opacity="0.6"':''}/>`;
+ if(E>0)out+=`<polyline class="anim" points="${clip(Soc,0,xmax)}" fill="none" stroke="${soc}" stroke-width="3.5"/>`;
+ if(T>0)out+=`<polyline class="anim" points="${clip(Pol,0,xmax)}" fill="none" stroke="${prod?sup:dem}" stroke-width="3.5"/>`;
+ const endpt=f=>{let last=null;for(let q=0;q<=xmax;q+=0.5){const p=f(q);if(p>=0&&p<=ymax)last=[q,p];}return last;};
+ const nameAt=(f,name,col)=>{const e=endpt(f);if(!e)return '';const atEdge=e[0]>=xmax-0.6;const x=atEdge?X(xmax)+8:X(e[0])+6;const y=atEdge?Y(e[1])+5:Y(e[1])-6;return `<text x="${x}" y="${y}" fill="${col}" font-size="15" font-weight="700" font-family="IBM Plex Sans, system-ui, sans-serif">${name}</text>`;};
+ out+=nameAt(D,prod?'D = PMB':'D = PMB',dem)+nameAt(Sp,'S = PMC',sup);
+ if(E>0)out+=nameAt(Soc,prod?'SMC':'SMB',soc);
+ if(T>0)out+=nameAt(Pol,mode==='np'?'PMC + tax':mode==='pp'?'PMC - subsidy':mode==='nc'?'PMB - charge':'PMB + subsidy',prod?sup:dem);
+ const keyItems=[[dem,prod?'Demand = PMB = SMB':'Demand = PMB'],[sup,prod?'Supply = PMC':'Supply = PMC = SMC']];
+ if(E>0)keyItems.push([soc,mode==='np'?'SMC = PMC + MD':mode==='pp'?'SMC = PMC - MB':mode==='nc'?'SMB = PMB - MD':'SMB = PMB + MB']);
+ if(T>0)keyItems.push([prod?sup:dem,mode==='np'?'PMC + tax':mode==='pp'?'PMC - subsidy':mode==='nc'?'PMB - charge':'PMB + subsidy']);
+ const pts=['<b>A</b> market (PMB = PMC)'];if(E>0&&Math.abs(Qm-Qs)>0.01)pts.push('<b>B</b> social optimum (SMB = SMC)','<b>C</b> social curve at Q1; deadweight loss = triangle ABC');
+ document.getElementById('key').innerHTML=keyItems.map(k=>`<span><i style="display:inline-block;width:22px;height:4px;background:${k[0]};vertical-align:middle;margin-right:6px"></i>${k[1]}</span>`).join('')+'<span class="pts">'+pts.join(' &nbsp; ')+'</span>';
+ const g=(q,p)=>`<line x1="${X(q)}" y1="${Y(0)}" x2="${X(q)}" y2="${Y(p)}" stroke="${css('--fg')}" stroke-dasharray="3 4"/>`;
+ const pm=prod?D(Qm):Sp(Qm), ps=prod?D(Qs):Sp(Qs);
+ out+=g(Qm,pm)+(Math.abs(Qm-Qs)>0.01?g(Qs,ps):'');
+ const L2=(x,y,t,col)=>`<text x="${x}" y="${y}" fill="${col}" font-size="19" font-weight="700" font-family="IBM Plex Sans, system-ui, sans-serif" paint-order="stroke" stroke="${css('--panel')}" stroke-width="4">${t}</text>`;
+ out+=`<circle class="anim" cx="${X(Qm)}" cy="${Y(pm)}" r="6" fill="${css('--fg')}"/>`+L2(X(Qm)+9,Y(pm)+(neg?22:-10),'A',css('--fg'));
+ if(E>0&&Math.abs(Qm-Qs)>0.01){out+=`<circle class="anim" cx="${X(Qs)}" cy="${Y(ps)}" r="6" fill="${soc}"/>`+L2(X(Qs)+(neg?-22:9),Y(ps)-10,'B',soc);const pc=Soc(Qm);out+=`<circle class="anim" cx="${X(Qm)}" cy="${Y(pc)}" r="6" fill="${soc}"/>`+L2(X(Qm)+9,Y(pc)+(pc>pm?-10:22),'C',soc);}
+ if(b-a>0.01){const y=Y(0)-14;const col=over?css('--supply'):'#548235';const txt=over?(prod?'overproduction':'overconsumption'):(prod?'underproduction':'underconsumption');
+   out+=`<line x1="${X(a)}" y1="${y}" x2="${X(b)}" y2="${y}" stroke="${col}" stroke-width="3"/><text class="lbl" x="${X((a+b)/2)}" y="${y-8}" text-anchor="middle" fill="${col}">${txt}</text>`;}
+ S.innerHTML=out;
+ const dwl=0.5*Math.abs(Qm-Qs)*Math.abs(E-T), rev=T*Qm;
+ document.getElementById('r-qm').textContent=Qm;document.getElementById('r-qs').textContent=Qs;
+ document.getElementById('r-pb').textContent='$'+Pb;document.getElementById('r-ps').textContent='$'+Ps;
+ document.getElementById('r-dwl').textContent=dwl?'$'+dwl:'$0';document.getElementById('r-rev').textContent='$'+rev;
+ const who=over?'too much':'too little';
+ document.getElementById('eq').textContent=`${TYPES[mode].name}. PMB: P = 160 - Q. PMC: P = 40 + Q. ${E>0?(prod?'SMC = PMC '+(neg?'+ ':'- ')+E:'SMB = PMB '+(neg?'- ':'+ ')+E)+'. The market makes '+who+': Q1 = '+Qm+', Q* = '+Qs+'.':'No externality: Q1 = Q*.'} ${T>0?(T===E?'Policy equals the external effect: the market is at Q*.':'Policy of '+T+' moves the market to Q = '+Qm+'.'):''}`;
+}
+setMode('np');
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+</script>
+
+</body>
+</html>
